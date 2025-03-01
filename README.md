@@ -1,5 +1,6 @@
 ## Описание
 Используя python и библиотеку clickhouse-connect<br/>  Реализовал локальное подключение к clickhouse.
+Для запуска приложения использовать runApp.py
 ## Созданные функции
 
 connect (host, port, username, password) - функция для подключения к бд.<br/>
