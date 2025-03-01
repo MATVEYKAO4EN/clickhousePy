@@ -81,7 +81,7 @@ if __name__ == "__main__":
     database='DBWordForm'
     table='form_table'
     file_paths = [
-    r'C:\Users\AAKuk\Desktop\matvey_c++\clickhousePy\wordList.txt'
+    r'C:\Users\AAKuk\Desktop\matvey_c++\wordList.txt'
 ]
     # Подключение к ClickHouse
     client = connect(host, port, username, password)
