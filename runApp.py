@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, filedialog
 from tkinterdnd2 import TkinterDnD, DND_FILES
 import main
+import time
 
 client = None
 db = None
@@ -32,9 +33,11 @@ def insert():
       label_insert.config(text="Сначала подключитесь к ClickHouse!")
    if db or table==None:
       label_insert.config(text="Сначала создайте бд и таблицу")
+   timeStart = time.time()   
    main.Function.insert (client, file_paths, db, table)
    main.Function.count (client, db, table)
-   label_insert.config(text="Успешно добавлен")
+   timeEnd = time.time()
+   label_insert.config(text=f"Успешно добавлен, время добавления {timeEnd-timeStart}")
 
 def clear():
    global client, db, table

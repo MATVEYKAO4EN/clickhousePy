@@ -20,7 +20,7 @@ class Function(object):
         print("Создано!")
 
     def insert (client, file_paths, db, table):
-        batch_size = 10000  # Размер батча
+        batch_size = 1000000  # Размер батча
 
         # Функция для вставки батча
         def insert_batch(batch):
