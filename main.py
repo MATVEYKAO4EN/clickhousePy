@@ -1,10 +1,10 @@
 import clickhouse_connect
 
-def connect(host,port,username,password):
+def connect (host, port, username, password):
     client = clickhouse_connect.get_client(host=host, port=port, username=username, password=password)
     return client
 
-def createDBAndTable(client,db,table):
+def createDBAndTable (client, db, table):
     client.command(f'CREATE DATABASE IF NOT EXISTS {db}')
 
     create_table_query = f'''
@@ -46,7 +46,7 @@ def insert(client, file_paths, db, table):
                 insert_batch(batch)
     print("Все файлы успешно вставлены.")
 
-def count(client,db,table):
+def count (client, db, table):
     # SQL-запрос для группировки и суммирования
     query = f"""
     SELECT wordform, SUM(amt) AS total_amt
@@ -69,7 +69,7 @@ def count(client,db,table):
 
     print("Данные успешно обновлены.")
 
-def clearTable(client,db,table):
+def clearTable (client, db, table):
    # Очистка таблицы
    client.command(f'TRUNCATE TABLE {db}.{table}')
    print(f"Таблица {db}.{table} успешно очищена.")
@@ -85,17 +85,17 @@ if __name__ == "__main__":
     r'C:\Users\AAKuk\Desktop\matvey_c++\clickhousePy\wordList.txt'
 ]
     # Подключение к ClickHouse
-    client = connect(host, port, username, password)
+    client = connect (host, port, username, password)
     
     # Создание базы данных и таблицы
-    createDBAndTable(client, database, table)
+    createDBAndTable (client, database, table)
 
 
     # Вставка данных из файла
-    insert(client, file_paths, database, table)
+    insert (client, file_paths, database, table)
     
     # Подсчёт количества строк в таблице
-    count(client, database, table)
+    count (client, database, table)
 
     # #Очистить таблицу
-    # clearTable(client,database,table)
+    # clearTable (client, database, table)
