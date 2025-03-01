@@ -30,8 +30,9 @@ def insert(client, file_paths, db, table):
         
         with open(file_path, 'r', encoding='utf-8') as file:
             for line in file:
-                    
-                line = line.replace('(', ' ').replace(')', ' ')
+                
+                line = line.replace('(', ' ').replace(')', ' ')\
+                           .replace('.', ' ').replace(',', ' ')
                 wordforms = line.strip().split()
                 batch.extend([(wordform, 1) for wordform in wordforms])
 
@@ -68,7 +69,7 @@ def count(client,db,table):
 
     print("Данные успешно обновлены.")
 
-def clearTable(db,table):
+def clearTable(client,db,table):
    # Очистка таблицы
    client.command(f'TRUNCATE TABLE {db}.{table}')
    print(f"Таблица {db}.{table} успешно очищена.")
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     database='DBWordForm'
     table='form_table'
     file_paths = [
-    r'C:\Users\AAKuk\Desktop\matvey_c++\wordList.txt'
+    r'C:\Users\AAKuk\Desktop\matvey_c++\clickhousePy\wordList.txt'
 ]
     # Подключение к ClickHouse
     client = connect(host, port, username, password)
