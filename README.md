@@ -1,5 +1,6 @@
 ## Описание
 Используя python и библиотеку clickhouse-connect<br/>  Реализовал локальное подключение к clickhouse.
+Для запуска приложения использовать runApp.py
 ## Созданные функции
 
 connect (host, port, username, password) - функция для подключения к бд.<br/>
@@ -15,4 +16,16 @@ clearTable (db, table) - функция для очистки таблицы.
 | Michel   | 1   |
 | Mon      | 10  |
 | Так      | 18  |
-# Example headings
+
+## Создал простой графический интерфейс
+Состоящий из трех окон<br/>
+Первое окно с полями для подключения к clickhouse<br/>
+![Alt text](/imageForReadMeFolder/1frame.png?raw=true "Optional Title")<br/>
+<br/>
+<br/>
+Второе окно для создания бд и таблицы<br/>
+![Alt text](/imageForReadMeFolder/2frame.png?raw=true "Optional Title")<br/>
+<br/>
+<br/>
+Третье окно для добавления файлов<br/>
+![Alt text](/imageForReadMeFolder/3frame.png?raw=true "Optional Title")<br/>
