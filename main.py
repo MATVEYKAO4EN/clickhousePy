@@ -4,7 +4,7 @@ def connect(host,port,username,password):
     client = clickhouse_connect.get_client(host=host, port=port, username=username, password=password)
     return client
 
-def createDBandTable(client,db,table):
+def createDBAndTable(client,db,table):
     client.command(f'CREATE DATABASE IF NOT EXISTS {db}')
 
     create_table_query = f'''
@@ -87,8 +87,8 @@ if __name__ == "__main__":
     # Подключение к ClickHouse
     client = connect(host, port, username, password)
     
-    # # Создание базы данных и таблицы
-    # createDBandTable(client, database, table)
+    # Создание базы данных и таблицы
+    createDBAndTable(client, database, table)
 
 
     # Вставка данных из файла
