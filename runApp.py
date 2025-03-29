@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog,messagebox 
 from tkinterdnd2 import TkinterDnD, DND_FILES
 import main
 import time
@@ -85,13 +85,32 @@ def insert():
    label_insert.config(text=f"Успешно добавлен, время добавления {timeEnd-timeStart}")
 
 def clear():
-   global client, database, table
-   if client==None:
+    global client, database, table
+    
+    # Проверка условий
+    if client is None:
       label_insert.config(text="Сначала подключитесь к ClickHouse!")
-   if database or table==None:
+      return
+        
+    if database is None or table is None:
       label_insert.config(text="Сначала создайте бд и таблицу")
-   main.Function.clearTable (client, database, table)
-   label_insert.config(text="Успешно добавлен")
+      return
+    
+    # Диалог подтверждения
+    confirm = messagebox.askyesno(
+        title="Подтверждение",
+        message="Вы уверены, что хотите очистить таблицу?",
+        icon='warning'
+    )
+    
+    if confirm:  # Если пользователь нажал "Да"
+        try:
+            main.Function.clearTable(client, database, table)
+            label_insert.config(text="Таблица успешно очищена")
+        except Exception as e:
+            label_insert.config(text=f"Ошибка: {str(e)}")
+    else:
+        label_insert.config(text="Действие отменено")
 
 # Функция для обработки перетаскивания файла
 def on_drop(event):
@@ -114,8 +133,10 @@ def select_file():
 # Создаем главное окно с поддержкой Drag and Drop
 root = TkinterDnD.Tk()
 root.title("Clickhouse словоформы")
-root.geometry("500x400")
-
+x = (root.winfo_screenwidth() // 2) - 250
+y = (root.winfo_screenheight() // 2) - 200
+root.geometry(f"500x400+{x}+{y}")
+root.resizable(False, False)
 # Создаем Notebook (вкладки)
 notebook = ttk.Notebook(root)
 notebook.pack(fill='both', expand=True)
