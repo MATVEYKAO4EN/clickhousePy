@@ -32,3 +32,7 @@ clearTable (db, table) - функция для очистки таблицы.
 <br/>
 Третье окно для добавления файлов<br/>
 ![Alt text](/imageForReadMeFolder/3frame.png?raw=true "Optional Title")<br/>
+<br/>
+<br/>
+Третье окно подтверждение удаления<br/>
+![Alt text](/imageForReadMeFolder/31frame.png?raw=true "Optional Title")<br/>
