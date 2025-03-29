@@ -1,0 +1,9 @@
+{
+    "database_config": {
+        "host": "localhost",
+        "port": "8123",
+        "username": "default",
+        "database": "DBWordForm",
+        "table": "form_table"
+    }
+}

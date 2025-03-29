@@ -4,25 +4,51 @@ from tkinterdnd2 import TkinterDnD, DND_FILES
 import main
 import time
 import threading
+import json
 
-client = None
-db = None
-table = None
+with open("config.json", "r", encoding="utf-8") as f:
+    config = json.load(f)
+
+# Доступ к данным
+db_config = config["database_config"]
+host = db_config["host"]
+port = db_config["port"]
+username = db_config["username"]
+database = db_config["database"]
+table = db_config["table"]
+
+#сохранение настроек
+def save_config():
+    config = {
+       "database_config": {
+            "host": entry_host.get(),
+            "port": entry_port.get(),
+            "username": entry_username.get(),
+            "database": entry_database.get(),
+            "table": entry_table.get()
+        }
+    }
+    with open("config.json", "w", encoding="utf-8") as f:
+        json.dump(config, f, indent=4, ensure_ascii=False)
+    print("Данные сохранены в config.json")
+    
+
 file_paths = []
 def connect():
-    host = entry_host.get()
-    port = entry_port.get()
-    username = entry_username.get()
-    password = entry_password.get()
+   host = entry_host.get()
+   port = entry_port.get()
+   username = entry_username.get()
+   password = entry_password.get()
+   save_config()
 
-    label_connect.config(text="Подключение...", foreground="blue")
+   label_connect.config(text="Подключение...", foreground="blue")
 
-    # Запускаем подключение в отдельном потоке
-    threading.Thread(
-        target=try_connect,
-        args=(host, port, username, password),
-        daemon=True  # Поток завершится при закрытии программы
-    ).start()
+   # Запускаем подключение в отдельном потоке
+   threading.Thread(
+      target=try_connect,
+      args=(host, port, username, password),
+      daemon=True  # Поток завершится при закрытии программы
+   ).start()
 
 def try_connect(host, port, username, password):
     global client
@@ -36,34 +62,35 @@ def try_connect(host, port, username, password):
         client = None
    
 def create():
-   global client, db, table
-   db = entry_db.get()
+   global client, database, table
+   database = entry_database.get()
    table = entry_table.get()
+   save_config()
    try:
-      main.Function.createDBAndTable (client, db, table)
+      main.Function.createDBAndTable (client, database, table)
       label_ctreate.config(text="Создано!")
    except Exception as e:
       label_ctreate.config(text="Сначала подключитесь к ClickHouse!")
 
 def insert():
-   global client, db, table
+   global client, database, table
    if client==None:
       label_insert.config(text="Сначала подключитесь к ClickHouse!")
-   if db or table==None:
+   if database or table==None:
       label_insert.config(text="Сначала создайте бд и таблицу")
    timeStart = time.time()   
-   main.Function.insert (client, file_paths, db, table)
-   main.Function.count (client, db, table)
+   main.Function.insert (client, file_paths, database, table)
+   main.Function.count (client, database, table)
    timeEnd = time.time()
    label_insert.config(text=f"Успешно добавлен, время добавления {timeEnd-timeStart}")
 
 def clear():
-   global client, db, table
+   global client, database, table
    if client==None:
       label_insert.config(text="Сначала подключитесь к ClickHouse!")
-   if db or table==None:
+   if database or table==None:
       label_insert.config(text="Сначала создайте бд и таблицу")
-   main.Function.clearTable (client, db, table)
+   main.Function.clearTable (client, database, table)
    label_insert.config(text="Успешно добавлен")
 
 # Функция для обработки перетаскивания файла
@@ -108,19 +135,19 @@ label_host = ttk.Label(frame1, text="Host:")
 label_host.grid(row=0, column=0, padx=10, pady=5, sticky="w")
 entry_host = ttk.Entry(frame1)
 entry_host.grid(row=0, column=1, padx=10, pady=5)
-entry_host.insert(0, "localhost")
+entry_host.insert(0, host)
 
 label_port = ttk.Label(frame1, text="Port:")
 label_port.grid(row=1, column=0, padx=10, pady=5, sticky="w")
 entry_port = ttk.Entry(frame1)
 entry_port.grid(row=1, column=1, padx=10, pady=5)
-entry_port.insert(0, "8123")
+entry_port.insert(0, port)
 
 label_username = ttk.Label(frame1, text="Username:")
 label_username.grid(row=2, column=0, padx=10, pady=5, sticky="w")
 entry_username = ttk.Entry(frame1)
 entry_username.grid(row=2, column=1, padx=10, pady=5)
-entry_username.insert(0, "default")
+entry_username.insert(0, username)
 
 label_password = ttk.Label(frame1, text="Password:")
 label_password.grid(row=3, column=0, padx=10, pady=5, sticky="w")
@@ -137,15 +164,15 @@ label_connect.grid(row=5, column=0, columnspan=2, pady=10)
 # Содержимое второй вкладки
 label_db = ttk.Label(frame2, text="Название БД:")
 label_db.grid(row=0, column=0, padx=10, pady=5, sticky="w")
-entry_db = ttk.Entry(frame2)
-entry_db.grid(row=0, column=1, padx=10, pady=5)
-entry_db.insert(0, "DBWordForm")
+entry_database = ttk.Entry(frame2)
+entry_database.grid(row=0, column=1, padx=10, pady=5)
+entry_database.insert(0, database)
 
 label_table = ttk.Label(frame2, text="Название таблицы:")
 label_table.grid(row=1, column=0, padx=10, pady=5, sticky="w")
 entry_table = ttk.Entry(frame2)
 entry_table.grid(row=1, column=1, padx=10, pady=5)
-entry_table.insert(0, "form_table")
+entry_table.insert(0, table)
 
 button_create = ttk.Button(frame2, text="Создать", command=create)
 button_create.grid(row=2, column=0, columnspan=2, pady=10)
