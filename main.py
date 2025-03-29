@@ -1,7 +1,7 @@
 import clickhouse_connect
 
 class Function(object):
-    def connect (host, port, username, password=None):
+    def connect (host, port, username, password):
         client = clickhouse_connect.get_client(host=host, port=port, username=username, password=password)
         print("подключено!")
         return client
@@ -26,7 +26,10 @@ class Function(object):
         def insert_batch(batch):
             if batch:
                 client.insert(f'{db}.{table}', batch, column_names=['wordform', 'amt'])
-
+                
+        #cтрока храняшая символы для замены
+        chars_to_replace = "()?!;:.,"
+        translation_table = str.maketrans(chars_to_replace, ' ' * len(chars_to_replace))
         # Чтение файлов и вставка данных
         for file_path in file_paths:  
             batch = []
@@ -34,10 +37,7 @@ class Function(object):
             with open(file_path, 'r', encoding='utf-8') as file:
                 for line in file:
                     
-                    line = line.replace('(', ' ').replace(')', ' ')\
-                            .replace('?', ' ').replace('!', ' ')\
-                            .replace(';', ' ').replace(':', ' ')\
-                            .replace('.', ' ').replace(',', ' ')
+                    line = line.translate(translation_table)
                     wordforms = line.strip().split()
                     batch.extend([(wordform, 1) for wordform in wordforms])
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     database='DBWordForm'
     table='form_table'
     file_paths = [
-    r'C:\Users\AAKuk\Desktop\matvey_c++\clickhousePy\wordList.txt'
+    r'Война и мир\Война и мир.txt'
 ]
     # Подключение к ClickHouse
     client =  fun.connect ( host, port, username, password)

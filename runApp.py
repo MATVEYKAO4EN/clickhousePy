@@ -3,19 +3,37 @@ from tkinter import ttk, filedialog
 from tkinterdnd2 import TkinterDnD, DND_FILES
 import main
 import time
+import threading
 
 client = None
 db = None
 table = None
 file_paths = []
 def connect():
-   global client
-   host = entry_host.get()
-   port = entry_port.get()
-   username = entry_username.get()
-   password = entry_password.get()
-   client = main.Function.connect (host, port, username, password)
-   label_connect.config(text="Подключено!")
+    host = entry_host.get()
+    port = entry_port.get()
+    username = entry_username.get()
+    password = entry_password.get()
+
+    label_connect.config(text="Подключение...", foreground="blue")
+
+    # Запускаем подключение в отдельном потоке
+    threading.Thread(
+        target=try_connect,
+        args=(host, port, username, password),
+        daemon=True  # Поток завершится при закрытии программы
+    ).start()
+
+def try_connect(host, port, username, password):
+    global client
+    try:
+        client = main.Function.connect(host, port, username, password)
+        client.query("SELECT 1")  # Проверка соединения
+        # Обновляем GUI из главного потока
+        label_connect.after(0, lambda: label_connect.config(text="Подключено!", foreground="green"))
+    except Exception as e:
+        label_connect.after(0, lambda: label_connect.config(text=f"Ошибка подключения", foreground="red"))
+        client = None
    
 def create():
    global client, db, table
@@ -50,21 +68,22 @@ def clear():
 
 # Функция для обработки перетаскивания файла
 def on_drop(event):
-    file_path = event.data.strip('{}')  # Убираем фигурные скобки, если они есть
-    entry_browse.insert(0, file_path)  # Вставляем путь в поле
-    file_paths.append(fr"{file_path}")  # Добавляем путь в список
+   file_paths_selected = [file_paths.replace("{", "").replace("}", "") for file_paths in event.data.split('} {')]
+   if file_paths_selected:
+      entry_browse.delete(0, tk.END)
+      for file_path in file_paths_selected:
+         file_paths.append(fr"{file_path}")  # Добавляем путь в список
+         entry_browse.insert(tk.END, file_path+" ")  # Вставляем путь в поле
 
 def select_file():
-    file_paths_selected = filedialog.askopenfilenames()  # Выбор нескольких файлов
-    if file_paths_selected:
-        entry_browse.delete(0, tk.END)  # Очищаем поле
-        for file_path in file_paths_selected:
-            raw_file_path = fr"{file_path}"  # Преобразуем путь в "сырой" формат (r'')
-            file_paths.append(raw_file_path)  # Добавляем путь в список
-            entry_browse.insert(tk.END, raw_file_path + "\n")  # Вставляем путь в поле
+   file_paths_selected = filedialog.askopenfilenames()  # Выбор нескольких файлов
+   if file_paths_selected:
+      entry_browse.delete(0, tk.END)
+      for file_path in file_paths_selected:
+         file_paths.append(fr"{file_path}")
+         entry_browse.insert(tk.END, file_path+" ") 
 
-
-
+# Описание графического интерфейса
 # Создаем главное окно с поддержкой Drag and Drop
 root = TkinterDnD.Tk()
 root.title("Clickhouse словоформы")
@@ -84,7 +103,7 @@ notebook.add(frame1, text="Подключиться к ClickHouse")
 notebook.add(frame2, text="Создать БД и Таблицу")
 notebook.add(frame3, text="Добавить текстовый файл")
 
-# Содержимое первой вкладки (остается без изменений)
+# Содержимое первой вкладки
 label_host = ttk.Label(frame1, text="Host:")
 label_host.grid(row=0, column=0, padx=10, pady=5, sticky="w")
 entry_host = ttk.Entry(frame1)
@@ -115,7 +134,7 @@ button_connect.grid(row=4, column=0, columnspan=2, pady=10)
 label_connect = ttk.Label(frame1, text='')
 label_connect.grid(row=5, column=0, columnspan=2, pady=10)
 
-# Содержимое второй вкладки (остается без изменений)
+# Содержимое второй вкладки
 label_db = ttk.Label(frame2, text="Название БД:")
 label_db.grid(row=0, column=0, padx=10, pady=5, sticky="w")
 entry_db = ttk.Entry(frame2)
