@@ -16,7 +16,7 @@ port = db_config["port"]
 username = db_config["username"]
 database = db_config["database"]
 table = db_config["table"]
-
+client = None
 #сохранение настроек
 def save_config():
     config = {
@@ -62,27 +62,65 @@ def try_connect(host, port, username, password):
         client = None
    
 def create():
-   global client, database, table
+   global client
    database = entry_database.get()
    table = entry_table.get()
    save_config()
    try:
       main.Function.createDBAndTable (client, database, table)
-      label_ctreate.config(text="Создано!")
+      label_ctreate.config(text="Создано!",foreground="green")
    except Exception as e:
       label_ctreate.config(text="Сначала подключитесь к ClickHouse!")
 
 def insert():
-   global client, database, table
-   if client==None:
-      label_insert.config(text="Сначала подключитесь к ClickHouse!")
-   if database or table==None:
-      label_insert.config(text="Сначала создайте бд и таблицу")
-   timeStart = time.time()   
-   main.Function.insert (client, file_paths, database, table)
-   main.Function.count (client, database, table)
-   timeEnd = time.time()
-   label_insert.config(text=f"Успешно добавлен, время добавления {timeEnd-timeStart}")
+    global client
+    database = entry_database.get()
+    table = entry_table.get()
+    
+    # Проверка подключения и выбора БД/таблицы
+    if client is None:
+        label_insert.config(text="Сначала подключитесь к ClickHouse!")
+        return
+    if not database or not table:
+        label_insert.config(text="Сначала создайте БД и таблицу!")
+        return
+    if not file_paths:  # Проверка на пустой путь к файлу
+        label_insert.config(text="Укажите файл для загрузки!")
+        return
+    
+    # Меняем текст и цвет для индикации начала обработки
+    label_insert.config(text="Обработка файла...", foreground="blue")
+    
+    # Запуск обработки в отдельном потоке
+    threading.Thread(
+        target=process_insert, 
+        daemon=True  # Поток завершится при закрытии программы
+    ).start()
+
+def process_insert():
+    try:
+        timeStart = time.time()
+        
+        # Вставляем данные
+        main.Function.insert(client, file_paths, database, table)
+        
+        # Обновляем счетчик
+        main.Function.count(client, database, table)
+        
+        timeEnd = time.time()
+        
+        # Обновляем GUI из основного потока
+        label_insert.after(0, lambda: label_insert.config(
+            text=f"Успешно добавлено, время: {timeEnd-timeStart:.2f} сек",
+            foreground="green"
+        ))
+        
+    except Exception as e:
+        # Вывод ошибки в GUI
+        label_insert.after(0, lambda: label_insert.config(
+            text=f"Ошибка: {str(e)}",
+            foreground="red"
+        ))
 
 def clear():
     global client, database, table
