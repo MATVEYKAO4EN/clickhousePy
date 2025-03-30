@@ -144,7 +144,7 @@ def clear():
     if confirm:  # Если пользователь нажал "Да"
         try:
             main.Function.clearTable(client, database, table)
-            label_insert.config(text="Таблица успешно очищена")
+            label_insert.config(text="Таблица успешно очищена",foreground="green")
         except Exception as e:
             label_insert.config(text=f"Ошибка: {str(e)}")
     else:
