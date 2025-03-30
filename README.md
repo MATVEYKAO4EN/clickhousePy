@@ -2,8 +2,8 @@
 Используя python и библиотеку clickhouse-connect<br/>  Реализовал локальное подключение к clickhouse.
 Для запуска приложения использовать runApp.py
 ### Тест работы приложения
-![Alt text](/imageForReadMeFolder/4.jfif)<br/>
-![Alt text](/imageForReadMeFolder/5.png)<br/>
+![Alt text](/ImagesForREADME/4.jfif)<br/>
+![Alt text](/ImagesForREADME/5.png)<br/>
 ## Созданные функции
 
 connect (host, port, username, password) - функция для подключения к бд.<br/>
@@ -23,16 +23,16 @@ clearTable (db, table) - функция для очистки таблицы.
 ## Создал простой графический интерфейс
 Состоящий из трех окон<br/>
 Первое окно с полями для подключения к clickhouse<br/>
-![Alt text](/imageForReadMeFolder/1frame.png?raw=true "Optional Title")<br/>
+![Alt text](/ImagesForREADME/1frame.png?raw=true "Optional Title")<br/>
 <br/>
 <br/>
 Второе окно для создания бд и таблицы<br/>
-![Alt text](/imageForReadMeFolder/2frame.png?raw=true "Optional Title")<br/>
+![Alt text](/ImagesForREADME/2frame.png?raw=true "Optional Title")<br/>
 <br/>
 <br/>
 Третье окно для добавления файлов<br/>
-![Alt text](/imageForReadMeFolder/3frame.png?raw=true "Optional Title")<br/>
+![Alt text](/ImagesForREADME/3frame.png?raw=true "Optional Title")<br/>
 <br/>
 <br/>
 Третье окно подтверждение удаления<br/>
-![Alt text](/imageForReadMeFolder/3.1frame.png?raw=true "Optional Title")<br/>
+![Alt text](/ImagesForREADME/3.1frame.png?raw=true "Optional Title")<br/>
