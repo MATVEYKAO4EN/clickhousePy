@@ -23,16 +23,16 @@ clearTable (db, table) - функция для очистки таблицы.
 ## Создал простой графический интерфейс
 Состоящий из трех окон<br/>
 Первое окно с полями для подключения к clickhouse<br/>
-![Alt text](/imageForReadMeFolder/1frame.png?raw=true "Optional Title")<br/>
+![Alt text](/ImagesForREADME/1frame.png?raw=true "Optional Title")<br/>
 <br/>
 <br/>
 Второе окно для создания бд и таблицы<br/>
-![Alt text](/imageForReadMeFolder/2frame.png?raw=true "Optional Title")<br/>
+![Alt text](/ImagesForREADME/2frame.png?raw=true "Optional Title")<br/>
 <br/>
 <br/>
 Третье окно для добавления файлов<br/>
-![Alt text](/imageForReadMeFolder/3frame.png?raw=true "Optional Title")<br/>
+![Alt text](/ImagesForREADME/3frame.png?raw=true "Optional Title")<br/>
 <br/>
 <br/>
 Третье окно подтверждение удаления<br/>
-![Alt text](/imageForReadMeFolder/3.1frame.png?raw=true "Optional Title")<br/>
+![Alt text](/ImagesForREADME/3.1frame.png?raw=true "Optional Title")<br/>
